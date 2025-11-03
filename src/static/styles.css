@@ -86,15 +86,38 @@ section h3 {
 }
 
 .participants ul {
-  list-style: disc inside;
+  list-style: none; /* hide bullets */
   margin: 0;
   padding: 0;
 }
 
 .participants li {
-  padding: 4px 0;
+  padding: 6px 0;
   color: #333;
   font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* participant email text */
+.participant-email {
+  word-break: break-all;
+}
+
+/* small unregister/delete button */
+.unregister-btn {
+  background: transparent;
+  border: none;
+  color: #c62828;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 3px;
+}
+
+.unregister-btn:hover {
+  background: rgba(198, 40, 40, 0.08);
 }
 
 /* empty state */
