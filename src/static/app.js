@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Clear loading message
       activitiesList.innerHTML = "";
+      // Reset activity select (keep the placeholder option)
+      activitySelect.innerHTML = '<option value="">-- Select an activity --</option>';
 
       // Populate activities list
       Object.entries(activities).forEach(([name, details]) => {
@@ -26,6 +28,77 @@ document.addEventListener("DOMContentLoaded", () => {
           <p><strong>Schedule:</strong> ${details.schedule}</p>
           <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
         `;
+
+        // Add participants section
+        const participantsDiv = document.createElement("div");
+        participantsDiv.className = "participants";
+
+        const participantsTitle = document.createElement("h5");
+        participantsTitle.textContent = "Participants";
+        participantsDiv.appendChild(participantsTitle);
+
+        const ul = document.createElement("ul");
+        if (Array.isArray(details.participants) && details.participants.length > 0) {
+          details.participants.forEach((p) => {
+            const li = document.createElement("li");
+
+            // participant label
+            const span = document.createElement("span");
+            span.textContent = p;
+            span.className = "participant-email";
+
+            // unregister / delete button
+            const btn = document.createElement("button");
+            btn.className = "unregister-btn";
+            btn.setAttribute("aria-label", `Unregister ${p} from ${name}`);
+            btn.title = "Unregister";
+            btn.innerHTML = "✖"; // simple X icon
+
+            // click handler to call unregister API
+            btn.addEventListener("click", async (e) => {
+              e.stopPropagation();
+              try {
+                const resp = await fetch(
+                  `/activities/${encodeURIComponent(name)}/unregister?email=${encodeURIComponent(p)}`,
+                  { method: "POST" }
+                );
+
+                const result = await resp.json();
+
+                if (resp.ok) {
+                  // show a brief success message and refresh the activities
+                  messageDiv.textContent = result.message || "Unregistered";
+                  messageDiv.className = "success";
+                  messageDiv.classList.remove("hidden");
+                  setTimeout(() => messageDiv.classList.add("hidden"), 3000);
+
+                  // refresh list to reflect change
+                  fetchActivities();
+                } else {
+                  messageDiv.textContent = result.detail || "Failed to unregister";
+                  messageDiv.className = "error";
+                  messageDiv.classList.remove("hidden");
+                }
+              } catch (err) {
+                console.error("Error unregistering:", err);
+                messageDiv.textContent = "Failed to unregister. Try again.";
+                messageDiv.className = "error";
+                messageDiv.classList.remove("hidden");
+              }
+            });
+
+            li.appendChild(span);
+            li.appendChild(btn);
+            ul.appendChild(li);
+          });
+        } else {
+          const li = document.createElement("li");
+          li.textContent = "No participants yet";
+          li.className = "empty";
+          ul.appendChild(li);
+        }
+        participantsDiv.appendChild(ul);
+        activityCard.appendChild(participantsDiv);
 
         activitiesList.appendChild(activityCard);
 
@@ -62,6 +135,8 @@ document.addEventListener("DOMContentLoaded", () => {
         messageDiv.textContent = result.message;
         messageDiv.className = "success";
         signupForm.reset();
+        // refresh activities list so participant changes appear immediately
+        fetchActivities();
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
         messageDiv.className = "error";

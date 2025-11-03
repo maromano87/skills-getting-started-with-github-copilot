@@ -63,6 +63,7 @@ section h3 {
   border: 1px solid #ddd;
   border-radius: 5px;
   background-color: #f9f9f9;
+  /* keep a subtle inner spacing for sections */
 }
 
 .activity-card h4 {
@@ -70,8 +71,61 @@ section h3 {
   color: #0066cc;
 }
 
-.activity-card p {
-  margin-bottom: 8px;
+/* Participants section */
+.participants {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed #eee;
+}
+
+.participants h5 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: #444;
+  font-weight: 600;
+}
+
+.participants ul {
+  list-style: none; /* hide bullets */
+  margin: 0;
+  padding: 0;
+}
+
+.participants li {
+  padding: 6px 0;
+  color: #333;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* participant email text */
+.participant-email {
+  word-break: break-all;
+}
+
+/* small unregister/delete button */
+.unregister-btn {
+  background: transparent;
+  border: none;
+  color: #c62828;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 3px;
+}
+
+.unregister-btn:hover {
+  background: rgba(198, 40, 40, 0.08);
+}
+
+/* empty state */
+.participants li.empty {
+  color: #777;
+  font-style: italic;
+  list-style-type: none;
+  padding-left: 0;
 }
 
 .form-group {
